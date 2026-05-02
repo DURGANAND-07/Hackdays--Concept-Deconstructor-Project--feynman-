@@ -14,14 +14,12 @@ body {
     background-color: var(--bg-color); color: var(--text-primary);
     font-family: 'Inter', sans-serif; min-height: 100vh;
     background-image: radial-gradient(circle at top, rgba(0, 243, 255, 0.05), transparent 50%);
-    display: flex; flex-direction: column;
+    display: flex; flex-direction: column; overflow-x: hidden;
 }
 
 .gradient-text {
     background: linear-gradient(to right, var(--neon-accent), var(--neon-purple));
-    -webkit-background-clip: text; 
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
     font-weight: 800; letter-spacing: -1px;
 }
 h1.gradient-text { font-size: 4.5rem; line-height: 1.1; margin-bottom: 1.5rem; }
@@ -29,7 +27,7 @@ h1.gradient-text { font-size: 4.5rem; line-height: 1.1; margin-bottom: 1.5rem; }
 .subtitle { font-size: 1.25rem; color: var(--text-secondary); margin-bottom: 2.5rem; max-width: 600px; margin-inline: auto; line-height: 1.6;}
 .hidden { display: none !important; }
 
-/* Navbar & Auth */
+/* Navbar & Desktop Auth */
 .navbar {
     display: flex; justify-content: space-between; align-items: center;
     padding: 1.2rem 3rem; position: sticky; top: 0; z-index: 100;
@@ -42,13 +40,21 @@ h1.gradient-text { font-size: 4.5rem; line-height: 1.1; margin-bottom: 1.5rem; }
 .streak-badge { background: rgba(255, 165, 0, 0.1); color: #ffa500; padding: 0.4rem 0.8rem; border-radius: 20px; font-weight: bold; font-size: 0.85rem; border: 1px solid rgba(255,165,0,0.3);}
 .nav-btn { background: transparent; border: none; color: var(--text-secondary); cursor: pointer; font-size: 1rem; transition: 0.3s;}
 .nav-btn:hover { color: #fff; }
-
 .auth-group { display: flex; gap: 1rem; margin-left: 1rem; padding-left: 1rem; border-left: 1px solid var(--glass-border);}
 .auth-btn { padding: 0.5rem 1.2rem; border-radius: 6px; font-weight: 600; cursor: pointer; transition: 0.3s; font-size: 0.9rem;}
 .login-btn { background: transparent; border: 1px solid var(--text-secondary); color: var(--text-primary); }
 .login-btn:hover { border-color: #fff; }
 .signup-btn { background: #fff; border: 1px solid #fff; color: #000; }
 .signup-btn:hover { box-shadow: 0 0 15px rgba(255,255,255,0.4); }
+
+/* Mobile Menu Button & Dropdown */
+.mobile-menu-btn { display: none; background: transparent; border: none; color: #fff; font-size: 1.8rem; cursor: pointer; z-index: 101; }
+.mobile-menu { 
+    position: fixed; top: 75px; right: 20px; flex-direction: column; gap: 1rem; padding: 1.5rem; z-index: 99; 
+    border-radius: 12px; opacity: 0; pointer-events: none; transform: translateY(-10px); transition: 0.3s ease-in-out;
+    border: 1px solid var(--neon-accent);
+}
+.mobile-menu.active { opacity: 1; pointer-events: all; transform: translateY(0); display: flex;}
 
 /* Layout & Glassmorphism */
 .container { max-width: 1100px; margin: 0 auto; padding: 3rem 1.5rem; flex: 1;}
@@ -63,7 +69,6 @@ h1.gradient-text { font-size: 4.5rem; line-height: 1.1; margin-bottom: 1.5rem; }
 .search-tag:hover { background: rgba(0, 243, 255, 0.1); border-color: var(--neon-accent); transform: translateY(-2px); }
 
 .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
-@media (max-width: 768px) { .grid-3 { grid-template-columns: 1fr; } }
 .map-card { padding: 2rem; text-align: left; }
 .icon-wrapper { font-size: 2.5rem; margin-bottom: 1rem; }
 .map-card h3 { font-size: 1.2rem; margin-bottom: 0.8rem; color: #fff;}
@@ -81,7 +86,6 @@ input { flex: 1; background: transparent; border: none; color: white; font-size:
 
 /* Results Dashboard & Markdown */
 .dashboard-split { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem; }
-@media (max-width: 768px) { .dashboard-split { grid-template-columns: 1fr; } }
 .card { padding: 1.5rem; }
 .card-header { display: flex; justify-content: space-between; align-items: center; }
 .icon-btn { background: transparent; border: none; color: var(--text-secondary); cursor: pointer; font-size: 1.2rem; transition: 0.2s;}
@@ -99,13 +103,10 @@ input { flex: 1; background: transparent; border: none; color: white; font-size:
 
 .quiz-option { display: block; width: 100%; text-align: left; background: rgba(255,255,255,0.05); color: #fff; margin-bottom: 0.5rem; padding: 1rem; border: 1px solid var(--glass-border); border-radius: 8px; cursor: pointer; transition: 0.2s; }
 .quiz-option:hover:not(:disabled) { background: rgba(255,255,255,0.1); border-color: var(--neon-accent); }
-
-/* Select & Grading States */
 .quiz-option.selected { background: rgba(176, 38, 255, 0.2); border-color: var(--neon-purple); box-shadow: 0 0 10px rgba(176, 38, 255, 0.3); }
 .quiz-option.correct { background: rgba(16, 185, 129, 0.2); border-color: #10b981; }
 .quiz-option.wrong { background: rgba(239, 68, 68, 0.2); border-color: #ef4444; }
 
-/* Dynamic Motivation Cards */
 .highlight-card { text-align: center; padding: 2rem; }
 .highlight-card.success { border-color: #10b981; background: linear-gradient(135deg, rgba(16,185,129,0.1), rgba(0,0,0,0)); }
 .highlight-card.warning { border-color: #f59e0b; background: linear-gradient(135deg, rgba(245,158,11,0.1), rgba(0,0,0,0)); }
@@ -122,9 +123,40 @@ input { flex: 1; background: transparent; border: none; color: white; font-size:
 @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
 .error-glass { background: rgba(239, 68, 68, 0.15); border-color: #ef4444; padding: 1rem; color: #fff; text-align: center; margin-bottom: 1.5rem; }
 
-/* Footer */
 footer { text-align: center; padding: 3rem 1rem 2rem 1rem; border-top: 1px solid var(--glass-border); margin-top: 4rem;}
 .footer-content p { color: var(--text-secondary); margin-bottom: 0.5rem; font-size: 0.95rem; }
 .heart { color: #ef4444; }
 .mlh-tag { color: var(--neon-accent) !important; font-weight: bold; letter-spacing: 1px;}
 .copyright { font-size: 0.8rem !important; opacity: 0.6; margin-top: 1.5rem;}
+
+/* =========================================================
+   MOBILE RESPONSIVENESS (The Magic Block)
+   ========================================================= */
+@media (max-width: 768px) {
+    /* Navbar shifts */
+    .navbar { padding: 1rem 1.5rem; }
+    .desktop-menu { display: none; } /* Hide desktop links */
+    .mobile-menu-btn { display: block; } /* Show hamburger */
+    
+    /* Hero Section shifts */
+    h1.gradient-text { font-size: 2.5rem; }
+    .subtitle { font-size: 1rem; padding: 0 1rem; }
+    .hero-content { padding: 1.5rem 0; }
+    
+    /* Layout shifts (from Grid to Stacked) */
+    .grid-3 { grid-template-columns: 1fr; gap: 1rem;} 
+    .dashboard-split { grid-template-columns: 1fr; gap: 1rem;}
+    .search-box { flex-direction: column; }
+    
+    /* Button adjustments */
+    #deconstructBtn { padding: 1rem; width: 100%; margin-top: 0.5rem;}
+    .cta-button { width: 100%; }
+    
+    /* Card Padding */
+    .card { padding: 1rem; }
+    .highlight-card { padding: 1.5rem 1rem; }
+    
+    /* Tag Cloud */
+    .tag-cloud { padding: 0 1rem; }
+    .search-tag { padding: 0.5rem 1rem; font-size: 0.85rem;}
+}
