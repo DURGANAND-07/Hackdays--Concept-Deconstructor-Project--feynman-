@@ -5,6 +5,7 @@ let currentStreak = parseInt(localStorage.getItem('feynmanStreak')) || 0;
 
 // UI Initialization
 document.getElementById('streakCounter').innerText = `🔥 ${currentStreak} Mastered`;
+document.getElementById('streakCounterMobile').innerText = `🔥 ${currentStreak} Mastered`; // Update Mobile Streak
 const startBtn = document.getElementById('startBtn');
 const heroSection = document.getElementById('heroSection');
 const appSection = document.getElementById('appSection');
@@ -12,11 +13,34 @@ const topicInput = document.getElementById('topicInput');
 const deconstructBtn = document.getElementById('deconstructBtn');
 const submitQuizBtn = document.getElementById('submitQuizBtn');
 
+// --- Mobile Menu Logic ---
+const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+const mobileMenu = document.getElementById('mobileMenu');
+
+mobileMenuBtn.addEventListener('click', () => {
+    mobileMenu.classList.toggle('active');
+    // Change icon to 'X' when open
+    mobileMenuBtn.innerText = mobileMenu.classList.contains('active') ? '✖' : '☰';
+});
+
+// Close menu if clicking outside of it
+document.addEventListener('click', (event) => {
+    if (!mobileMenu.contains(event.target) && !mobileMenuBtn.contains(event.target)) {
+        mobileMenu.classList.remove('active');
+        mobileMenuBtn.innerText = '☰';
+    }
+});
+
 // --- Navigation & Routing ---
 function goToWorkspace(autoSearchTopic = null) {
     heroSection.classList.add('hidden');
     appSection.classList.remove('hidden');
-    document.getElementById('mainFooter').classList.add('hidden'); // Hide footer in workspace
+    document.getElementById('mainFooter').classList.add('hidden'); 
+    
+    // Close mobile menu if open
+    mobileMenu.classList.remove('active');
+    mobileMenuBtn.innerText = '☰';
+    
     topicInput.focus();
     
     if (autoSearchTopic) {
@@ -27,11 +51,20 @@ function goToWorkspace(autoSearchTopic = null) {
 
 startBtn.addEventListener('click', () => goToWorkspace(null));
 
-document.getElementById('navHome').addEventListener('click', () => {
+// Desktop Home Button
+document.getElementById('navHome').addEventListener('click', navigateHome);
+// Mobile Home Button
+document.getElementById('navHomeMobile').addEventListener('click', navigateHome);
+
+function navigateHome() {
     appSection.classList.add('hidden');
     heroSection.classList.remove('hidden');
-    document.getElementById('mainFooter').classList.remove('hidden'); // Show footer on home
-});
+    document.getElementById('mainFooter').classList.remove('hidden'); 
+    
+    // Close mobile menu if open
+    mobileMenu.classList.remove('active');
+    mobileMenuBtn.innerText = '☰';
+}
 
 // Interactive Tag Clicks
 document.querySelectorAll('.search-tag').forEach(tag => {
@@ -40,7 +73,11 @@ document.querySelectorAll('.search-tag').forEach(tag => {
 
 // Dummy Auth Popups
 document.querySelectorAll('.auth-btn').forEach(btn => {
-    btn.addEventListener('click', () => alert("Authentication module coming in V2. Enjoy the beta access!"));
+    btn.addEventListener('click', () => {
+        alert("Authentication module coming in V2. Enjoy the beta access!");
+        mobileMenu.classList.remove('active');
+        mobileMenuBtn.innerText = '☰';
+    });
 });
 
 // --- Utility Functions ---
@@ -54,7 +91,6 @@ window.shareChallenge = function() {
     alert('Challenge link copied to clipboard!');
 }
 
-// Trigger search on "Enter"
 topicInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') deconstructBtn.click(); });
 
 // --- Core API & Rendering Logic ---
@@ -73,7 +109,6 @@ deconstructBtn.addEventListener('click', async () => {
     userSelections = {}; 
 
     try {
-        // 2. Fetch Data from local Node.js Server
         const response = await fetch('/api/deconstruct', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -94,7 +129,6 @@ deconstructBtn.addEventListener('click', async () => {
             const qDiv = document.createElement('div');
             qDiv.className = 'quiz-question-block';
             
-            // Set Difficulty Badge Colors
             let diffClass = q.difficulty.toLowerCase() === 'hard' ? 'diff-hard' : 
                             q.difficulty.toLowerCase() === 'medium' ? 'diff-medium' : 'diff-easy';
 
@@ -111,13 +145,11 @@ deconstructBtn.addEventListener('click', async () => {
                 btn.className = 'quiz-option';
                 btn.innerText = opt;
                 
-                // Track Selections (No immediate grading)
                 btn.onclick = () => {
                     Array.from(optionsDiv.children).forEach(b => b.classList.remove('selected'));
                     btn.classList.add('selected');
-                    userSelections[index] = opt; // Save the answer
+                    userSelections[index] = opt; 
                     
-                    // Show "Submit" button only if ALL questions have a selection
                     if(Object.keys(userSelections).length === quizData.length) {
                         document.getElementById('submitContainer').classList.remove('hidden');
                     }
@@ -129,13 +161,17 @@ deconstructBtn.addEventListener('click', async () => {
             if(index < quizData.length -1) quizContainer.appendChild(document.createElement('hr'));
         });
 
-        // 5. Reveal Dashboard
         document.getElementById('loading').classList.add('hidden');
         document.getElementById('resultsDashboard').classList.remove('hidden');
 
     } catch (error) {
         document.getElementById('loading').classList.add('hidden');
-        document.getElementById('errorBox').innerText = "Intelligence pipeline failed. Please ensure the backend server is running.";
+        
+        let errorMsg = error.message === "Failed to fetch" 
+            ? "Cannot connect to backend. Please ensure 'node server.js' is running." 
+            : `AI Pipeline Error: ${error.message}`;
+            
+        document.getElementById('errorBox').innerText = errorMsg;
         document.getElementById('errorBox').classList.remove('hidden');
     }
 });
@@ -145,39 +181,29 @@ submitQuizBtn.addEventListener('click', () => {
     let score = 0;
     const total = quizData.length;
 
-    // Iterate through data to grade user's choices
     quizData.forEach((q, index) => {
         const optionsDiv = document.getElementById(`options-group-${index}`);
         const userChoice = userSelections[index];
         const correctChoice = q.correct_answer;
 
         Array.from(optionsDiv.children).forEach(btn => {
-            btn.disabled = true; // Lock all buttons
-            
-            // Highlight correct answer
-            if (btn.innerText === correctChoice) {
-                btn.classList.add('correct'); 
-            }
-            // Highlight user's wrong answer
-            if (btn.innerText === userChoice && userChoice !== correctChoice) {
-                btn.classList.add('wrong'); 
-            }
+            btn.disabled = true; 
+            if (btn.innerText === correctChoice) btn.classList.add('correct'); 
+            if (btn.innerText === userChoice && userChoice !== correctChoice) btn.classList.add('wrong'); 
         });
 
         if (userChoice === correctChoice) score++;
     });
 
-    submitQuizBtn.classList.add('hidden'); // Remove submit button
-    showDynamicFeedback(score, total); // Trigger UI Feedback
+    submitQuizBtn.classList.add('hidden'); 
+    showDynamicFeedback(score, total); 
 });
 
-// Dynamic State Changes
 function showDynamicFeedback(score, total) {
     const block = document.getElementById('motivationBlock');
     const title = document.getElementById('feedbackTitle');
     const text = document.getElementById('feedbackText');
     
-    // Reset any old styling
     block.className = 'card glass highlight-card fade-in'; 
 
     if (score === total) {
@@ -185,13 +211,12 @@ function showDynamicFeedback(score, total) {
         title.innerText = "🌟 Flawless Victory!";
         text.innerHTML = `<strong>Score: ${score}/${total}.</strong> You are a phenomenal learner. You completely mastered this concept!`;
         
-        // Dopamine Hit
         confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 }, colors: ['#00f3ff', '#b026ff', '#ffffff'] });
         
-        // Update Local Storage Streak
         currentStreak++;
         localStorage.setItem('feynmanStreak', currentStreak);
         document.getElementById('streakCounter').innerText = `🔥 ${currentStreak} Mastered`;
+        document.getElementById('streakCounterMobile').innerText = `🔥 ${currentStreak} Mastered`;
     } 
     else if (score > 0) {
         block.classList.add('warning');
