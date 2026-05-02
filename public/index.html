@@ -6,7 +6,6 @@
     <title>Concept Deconstructor | Project Feynman</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
-    <!-- Supercharged External Libraries -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.0/vanilla-tilt.min.js"></script>
@@ -15,7 +14,12 @@
     <!-- Navigation -->
     <nav class="navbar glass">
         <div class="logo">Concept Deconstructor <span class="badge">BETA</span></div>
-        <div class="nav-links">
+        
+        <!-- Mobile Hamburger Button -->
+        <button id="mobileMenuBtn" class="mobile-menu-btn">☰</button>
+
+        <!-- Desktop Navigation Links -->
+        <div class="nav-links desktop-menu">
             <span id="streakCounter" class="streak-badge">🔥 0 Mastered</span>
             <button class="nav-btn" id="navHome">Home</button>
             <div class="auth-group">
@@ -24,6 +28,14 @@
             </div>
         </div>
     </nav>
+
+    <!-- Mobile Dropdown Menu -->
+    <div id="mobileMenu" class="mobile-menu glass hidden">
+        <span id="streakCounterMobile" class="streak-badge">🔥 0 Mastered</span>
+        <button class="nav-btn" id="navHomeMobile">Home</button>
+        <button class="auth-btn login-btn">Log In</button>
+        <button class="auth-btn signup-btn">Sign Up</button>
+    </div>
 
     <main class="container">
         <!-- ================= HERO & ENGAGEMENT ================= -->
@@ -34,7 +46,6 @@
                 <button id="startBtn" class="cta-button glow-hover">Enter Workspace <span class="arrow">→</span></button>
             </div>
 
-            <!-- Interactive Trending Tags -->
             <div class="trending-section">
                 <p class="trending-title">Not sure where to start? Try a trending topic:</p>
                 <div class="tag-cloud">
@@ -45,7 +56,6 @@
                 </div>
             </div>
 
-            <!-- Product User Map -->
             <div class="product-map-container">
                 <h2 class="section-title">How the Pipeline Works</h2>
                 <div class="product-map grid-3">
@@ -75,11 +85,10 @@
             </div>
 
             <div class="search-box glass" data-tilt data-tilt-glare data-tilt-max-glare="0.1" data-tilt-max="2">
-                <input type="text" id="topicInput" placeholder="e.g., Deadlocks, Neural Networks, Docker..." autocomplete="off">
+                <input type="text" id="topicInput" placeholder="e.g., Deadlocks, Neural Networks..." autocomplete="off">
                 <button id="deconstructBtn" class="glow-hover">Deconstruct</button>
             </div>
 
-            <!-- Scanner Animation -->
             <div id="loading" class="hidden">
                 <div class="scanner-container"><div class="scanner-bar"></div></div>
                 <p class="loading-text">Synthesizing intelligence pipeline...</p>
@@ -89,8 +98,7 @@
 
             <div id="resultsDashboard" class="hidden">
                 <div class="dashboard-split">
-                    <!-- Analogy Card -->
-                    <div class="card glass analogy-card" data-tilt data-tilt-max="3">
+                    <div class="card glass analogy-card">
                         <div class="card-header">
                             <h3>🧠 The 5-Year-Old View</h3>
                             <button class="icon-btn" onclick="copyText('analogyText')" title="Copy to Notes">📋</button>
@@ -99,8 +107,7 @@
                         <div id="analogyText" class="markdown-body"></div>
                     </div>
                     
-                    <!-- Concept Card -->
-                    <div class="card glass concept-card" data-tilt data-tilt-max="3">
+                    <div class="card glass concept-card">
                         <div class="card-header">
                             <h3>🎓 The Scholar View</h3>
                             <button class="icon-btn" onclick="copyText('conceptText')" title="Copy to Notes">📋</button>
@@ -110,7 +117,6 @@
                     </div>
                 </div>
 
-                <!-- Interactive Quiz -->
                 <div class="card glass quiz-card">
                     <h3>⚡ Active Recall Quiz</h3>
                     <div class="divider"></div>
@@ -121,7 +127,6 @@
                     </div>
                 </div>
 
-                <!-- Dynamic Feedback Area -->
                 <div id="motivationBlock" class="card glass highlight-card fade-in hidden">
                     <h3 id="feedbackTitle">🌟 Knowledge Decoded!</h3>
                     <p id="feedbackText"><strong>You are a phenomenal learner.</strong></p>
@@ -131,7 +136,6 @@
         </section>
     </main>
 
-    <!-- Footer (Toggles via JS) -->
     <footer id="mainFooter">
         <div class="footer-content">
             <p>Built with <span class="heart">❤️</span> by Durganand Sah.</p>
