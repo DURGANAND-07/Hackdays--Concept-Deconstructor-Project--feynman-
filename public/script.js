@@ -5,7 +5,7 @@ let currentStreak = parseInt(localStorage.getItem('feynmanStreak')) || 0;
 
 // UI Initialization
 document.getElementById('streakCounter').innerText = `🔥 ${currentStreak} Mastered`;
-document.getElementById('streakCounterMobile').innerText = `🔥 ${currentStreak} Mastered`; // Update Mobile Streak
+document.getElementById('streakCounterMobile').innerText = `🔥 ${currentStreak} Mastered`; 
 const startBtn = document.getElementById('startBtn');
 const heroSection = document.getElementById('heroSection');
 const appSection = document.getElementById('appSection');
@@ -17,15 +17,15 @@ const submitQuizBtn = document.getElementById('submitQuizBtn');
 const mobileMenuBtn = document.getElementById('mobileMenuBtn');
 const mobileMenu = document.getElementById('mobileMenu');
 
-mobileMenuBtn.addEventListener('click', () => {
+mobileMenuBtn.addEventListener('click', (event) => {
+    event.stopPropagation(); // Stop click from immediately closing menu
     mobileMenu.classList.toggle('active');
-    // Change icon to 'X' when open
     mobileMenuBtn.innerText = mobileMenu.classList.contains('active') ? '✖' : '☰';
 });
 
 // Close menu if clicking outside of it
 document.addEventListener('click', (event) => {
-    if (!mobileMenu.contains(event.target) && !mobileMenuBtn.contains(event.target)) {
+    if (mobileMenu.classList.contains('active') && !mobileMenu.contains(event.target) && !mobileMenuBtn.contains(event.target)) {
         mobileMenu.classList.remove('active');
         mobileMenuBtn.innerText = '☰';
     }
