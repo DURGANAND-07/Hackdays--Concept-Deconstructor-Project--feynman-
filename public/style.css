@@ -47,14 +47,9 @@ h1.gradient-text { font-size: 4.5rem; line-height: 1.1; margin-bottom: 1.5rem; }
 .signup-btn { background: #fff; border: 1px solid #fff; color: #000; }
 .signup-btn:hover { box-shadow: 0 0 15px rgba(255,255,255,0.4); }
 
-/* Mobile Menu Button & Dropdown */
-.mobile-menu-btn { display: none; background: transparent; border: none; color: #fff; font-size: 1.8rem; cursor: pointer; z-index: 101; }
-.mobile-menu { 
-    position: fixed; top: 75px; right: 20px; flex-direction: column; gap: 1rem; padding: 1.5rem; z-index: 99; 
-    border-radius: 12px; opacity: 0; pointer-events: none; transform: translateY(-10px); transition: 0.3s ease-in-out;
-    border: 1px solid var(--neon-accent);
-}
-.mobile-menu.active { opacity: 1; pointer-events: all; transform: translateY(0); display: flex;}
+/* Hide Mobile Elements on PC */
+.mobile-menu-btn { display: none; }
+.mobile-menu { display: none; }
 
 /* Layout & Glassmorphism */
 .container { max-width: 1100px; margin: 0 auto; padding: 3rem 1.5rem; flex: 1;}
@@ -130,13 +125,32 @@ footer { text-align: center; padding: 3rem 1rem 2rem 1rem; border-top: 1px solid
 .copyright { font-size: 0.8rem !important; opacity: 0.6; margin-top: 1.5rem;}
 
 /* =========================================================
-   MOBILE RESPONSIVENESS (The Magic Block)
+   MOBILE RESPONSIVENESS (The Fix)
    ========================================================= */
 @media (max-width: 768px) {
     /* Navbar shifts */
     .navbar { padding: 1rem 1.5rem; }
     .desktop-menu { display: none; } /* Hide desktop links */
-    .mobile-menu-btn { display: block; } /* Show hamburger */
+    
+    /* Reveal Mobile Toggle Button */
+    .mobile-menu-btn { 
+        display: block; background: transparent; border: none; color: #fff; 
+        font-size: 1.8rem; cursor: pointer; z-index: 101; 
+    }
+    
+    /* Mobile Dropdown Styling */
+    .mobile-menu { 
+        display: flex; position: absolute; top: 70px; right: 20px; flex-direction: column; 
+        gap: 1rem; padding: 1.5rem; z-index: 99; border-radius: 12px; width: 220px;
+        opacity: 0; pointer-events: none; transform: translateY(-10px); transition: 0.3s ease-in-out;
+        border: 1px solid var(--neon-accent); 
+        background: rgba(10, 10, 15, 0.95); /* Deep dark background */
+        backdrop-filter: blur(20px);
+    }
+    /* When active class is added by JS */
+    .mobile-menu.active { 
+        opacity: 1; pointer-events: all; transform: translateY(0); 
+    }
     
     /* Hero Section shifts */
     h1.gradient-text { font-size: 2.5rem; }
